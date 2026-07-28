@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meshtastic Dog Tracker Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #e0e0e0; background: #0d1117; padding: 2rem; max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: #58a6ff; border-bottom: 2px solid #30363d; padding-bottom: 0.5rem; }
+        h2 { font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1rem; color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 0.3rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #79c0ff; }
+        p, li { margin-bottom: 0.75rem; }
+        ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        code { background: #161b22; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Courier New', monospace; color: #ffa657; }
+        pre { background: #161b22; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
+        pre code { background: none; padding: 0; color: #e0e0e0; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        th, td { padding: 0.75rem; text-align: left; border: 1px solid #30363d; }
+        th { background: #161b22; color: #58a6ff; }
+        tr:nth-child(even) { background: #161b22; }
+        .diagram { background: #161b22; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: 'Courier New', monospace; white-space: pre; overflow-x: auto; color: #7ee787; }
+        .tip { background: #1a2332; border-left: 4px solid #58a6ff; padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; }
+        a { color: #58a6ff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Meshtastic Dog Tracker Guide</h1>
+<p>A practical guide to building your own off-grid GPS dog tracker using Meshtastic — no SIM card, no subscription, no cellular coverage needed.</p>
+
+<h2>Hardware Options</h2>
+
+<h3>Option A: Buy Pre-built (Easiest)</h3>
+<ul>
+    <li><strong>Heltec Wireless Tracker</strong> (~$35–40) — Tiny, purpose-built for GPS tracking, runs Meshtastic out of the box. Small enough for most dogs.</li>
+    <li><strong>LILYGO T-Beam S3 Supreme</strong> (~$25–35) — ESP32-S3 + GPS + LoRa, slightly bigger but great battery life and well-supported.</li>
+    <li><strong>RAK WisBlock with GPS module</strong> — Modular, good if you want to swap parts later.</li>
+</ul>
+
+<h3>Option B: DIY Build (Cheapest, ~$20–30 in parts)</h3>
+<ul>
+    <li><strong>ESP32 board:</strong> Heltec V3 or TTGO T-Beam (ESP32 + LoRa SX1262/SX1278)</li>
+    <li><strong>GPS module:</strong> NEO-M9N or ATGM336H (I2C interface, fast fix)</li>
+    <li><strong>Battery:</strong> 1000–2000mAh LiPo with charging board</li>
+    <li><strong>Antenna:</strong> 433/868/915 MHz LoRa antenna (match your region)</li>
+</ul>
+
+<h2>System Architecture</h2>
+
+<div class="diagram">Dog collar: ESP32 + GPS + LoRa → broadcasts position packets
+Property station(s): ESP32 + GPS + LoRa → receives dog's coords, forwards to phone via Bluetooth/WiFi
+Your phone: Meshtastic app → shows dog on map in real-time</div>
+
+<p>You need <strong>at least one fixed station</strong> on your property (garage, house, fence post) that stays within range of both the dog and your phone. The dog's collar broadcasts GPS coordinates over LoRa, the station picks them up and relays to you via Bluetooth to your phone running the Meshtastic app.</p>
+
+<h2>Key Configuration Tips</h2>
+<ul>
+    <li><strong>Position update interval:</strong> Set to 30–60 seconds on the collar (shorter = more battery drain)</li>
+    <li><strong>Smart broadcast:</strong> Enable — only sends position when dog moves &gt;50m or time since last send &gt; interval</li>
+    <li><strong>GPS mode:</strong> "Enabled" with reasonable fix timeout</li>
+    <li><strong>Power saving:</strong> The collar should use deep sleep between GPS fixes. A 1000mAh battery can last days to weeks depending on update frequency</li>
+</ul>
+
+<h2>Antenna &amp; Range Considerations</h2>
+<ul>
+    <li>LoRa range in suburban areas: typically 0.5–2 km line of sight</li>
+    <li>Use a good quality antenna (not the cheap ceramic ones)</li>
+    <li>Place your property station as high up as possible — roof or tall pole makes a big difference</li>
+    <li>If your yard is large, add a second relay station at the far end</li>
+</ul>
+
+<h2>Power Management</h2>
+<p>This is the biggest challenge. GPS + LoRa transmission drains battery fast. Tips:</p>
+<ul>
+    <li>Update position every 60–120 seconds (not every few seconds)</li>
+    <li>Use deep sleep between fixes</li>
+    <li>A 1000mAh battery might last 1–3 days; 2000mAh could stretch to a week</li>
+    <li>Consider a small solar panel on the collar for indefinite operation</li>
+</ul>
+
+<h2>What You'll Need to Order</h2>
+
+<table>
+    <thead>
+        <tr><th>Item</th><th>Approx Cost</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Heltec Wireless Tracker (pre-built)</td><td>$35–40</td></tr>
+        <tr><td>OR TTGO T-Beam S3 + GPS module</td><td>$25–35</td></tr>
+        <tr><td>LiPo battery 1000–2000mAh</td><td>$5–8</td></tr>
+        <tr><td>Good LoRa antenna</td><td>$3–5</td></tr>
+        <tr><td>Collar mount / 3D printed case</td><td>$0–10 (if you have a printer)</td></tr>
+    </tbody>
+</table>
+
+<h2>Getting Started</h2>
+<ol>
+    <li>Flash Meshtastic firmware on the ESP32 (<a href="https://flash.meshtastic.org" target="_blank">flash.meshtastic.org</a>)</li>
+    <li>Set up your property station first — get it communicating with your phone</li>
+    <li>Flash and configure the collar unit</li>
+    <li>Test range by walking around your yard with the dog's device</li>
+</ol>
+
+<div class="tip">
+    <strong>Tip:</strong> The Meshtastic Discord server (<a href="https://discord.gg/meshtastic" target="_blank">discord.gg/meshtastic</a>) has a <code>#hardware</code> channel that's very active for build questions, and there are several YouTube tutorials showing the actual assembly process.
+</div>
+
+<p style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.9rem;">Generated July 2026 • Meshtastic Dog Tracker Guide</p>
+
+</body>
+</html>
