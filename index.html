@@ -3,112 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meshtastic Dog Tracker Guide</title>
+    <title>🐕 Meshtastic Dog Tracker Guide</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #e0e0e0; background: #0d1117; padding: 2rem; max-width: 900px; margin: 0 auto; }
-        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: #58a6ff; border-bottom: 2px solid #30363d; padding-bottom: 0.5rem; }
-        h2 { font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1rem; color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 0.3rem; }
-        h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #79c0ff; }
-        p, li { margin-bottom: 0.75rem; }
-        ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
-        code { background: #161b22; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Courier New', monospace; color: #ffa657; }
-        pre { background: #161b22; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
-        pre code { background: none; padding: 0; color: #e0e0e0; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-        th, td { padding: 0.75rem; text-align: left; border: 1px solid #30363d; }
-        th { background: #161b22; color: #58a6ff; }
-        tr:nth-child(even) { background: #161b22; }
-        .diagram { background: #161b22; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: 'Courier New', monospace; white-space: pre; overflow-x: auto; color: #7ee787; }
-        .tip { background: #1a2332; border-left: 4px solid #58a6ff; padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; }
-        a { color: #58a6ff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+
+        body {
+            font-family: 'Nunito', -apple-system, sans-serif;
+            line-height: 1.7;
+            color: #2d3436;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe, #fd79a8);
+            color: white;
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "🐾";
+            font-size: 15rem;
+            position: absolute;
+            top: -2rem;
+            right: -2rem;
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+
+        .hero::after {
+            content: "🐾";
+            font-size: 8rem;
+            position: absolute;
+            bottom: -1rem;
+            left: 3rem;
+            opacity: 0.08;
+            transform: rotate(25deg);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: -2rem auto 3rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #6c5ce7;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #e84393;
+            margin-top: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p, li {
+            margin-bottom: 0.6rem;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        code {
+            background: #dfe6e9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            color: #d63031;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            color: #00b894;
+            font-family: 'Courier New', monospace;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 1rem;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #dfe6e9;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #f8f9fa; }
+
+        .diagram {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,184,148,0.3);
+        }
+
+        .tip {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-left: 5px solid #f39c12;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .badge.green { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .badge.blue { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+
+        a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #6c5ce7;
+        }
+
+        .paw-divider {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            opacity: 0.4;
+            letter-spacing: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+            .card { padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
-<h1>Meshtastic Dog Tracker Guide</h1>
-<p>A practical guide to building your own off-grid GPS dog tracker using Meshtastic — no SIM card, no subscription, no cellular coverage needed.</p>
-
-<h2>Hardware Options</h2>
-
-<h3>Option A: Buy Pre-built (Easiest)</h3>
-<ul>
-    <li><strong>Heltec Wireless Tracker</strong> (~$35–40) — Tiny, purpose-built for GPS tracking, runs Meshtastic out of the box. Small enough for most dogs.</li>
-    <li><strong>LILYGO T-Beam S3 Supreme</strong> (~$25–35) — ESP32-S3 + GPS + LoRa, slightly bigger but great battery life and well-supported.</li>
-    <li><strong>RAK WisBlock with GPS module</strong> — Modular, good if you want to swap parts later.</li>
-</ul>
-
-<h3>Option B: DIY Build (Cheapest, ~$20–30 in parts)</h3>
-<ul>
-    <li><strong>ESP32 board:</strong> Heltec V3 or TTGO T-Beam (ESP32 + LoRa SX1262/SX1278)</li>
-    <li><strong>GPS module:</strong> NEO-M9N or ATGM336H (I2C interface, fast fix)</li>
-    <li><strong>Battery:</strong> 1000–2000mAh LiPo with charging board</li>
-    <li><strong>Antenna:</strong> 433/868/915 MHz LoRa antenna (match your region)</li>
-</ul>
-
-<h2>System Architecture</h2>
-
-<div class="diagram">Dog collar: ESP32 + GPS + LoRa → broadcasts position packets
-Property station(s): ESP32 + GPS + LoRa → receives dog's coords, forwards to phone via Bluetooth/WiFi
-Your phone: Meshtastic app → shows dog on map in real-time</div>
-
-<p>You need <strong>at least one fixed station</strong> on your property (garage, house, fence post) that stays within range of both the dog and your phone. The dog's collar broadcasts GPS coordinates over LoRa, the station picks them up and relays to you via Bluetooth to your phone running the Meshtastic app.</p>
-
-<h2>Key Configuration Tips</h2>
-<ul>
-    <li><strong>Position update interval:</strong> Set to 30–60 seconds on the collar (shorter = more battery drain)</li>
-    <li><strong>Smart broadcast:</strong> Enable — only sends position when dog moves &gt;50m or time since last send &gt; interval</li>
-    <li><strong>GPS mode:</strong> "Enabled" with reasonable fix timeout</li>
-    <li><strong>Power saving:</strong> The collar should use deep sleep between GPS fixes. A 1000mAh battery can last days to weeks depending on update frequency</li>
-</ul>
-
-<h2>Antenna &amp; Range Considerations</h2>
-<ul>
-    <li>LoRa range in suburban areas: typically 0.5–2 km line of sight</li>
-    <li>Use a good quality antenna (not the cheap ceramic ones)</li>
-    <li>Place your property station as high up as possible — roof or tall pole makes a big difference</li>
-    <li>If your yard is large, add a second relay station at the far end</li>
-</ul>
-
-<h2>Power Management</h2>
-<p>This is the biggest challenge. GPS + LoRa transmission drains battery fast. Tips:</p>
-<ul>
-    <li>Update position every 60–120 seconds (not every few seconds)</li>
-    <li>Use deep sleep between fixes</li>
-    <li>A 1000mAh battery might last 1–3 days; 2000mAh could stretch to a week</li>
-    <li>Consider a small solar panel on the collar for indefinite operation</li>
-</ul>
-
-<h2>What You'll Need to Order</h2>
-
-<table>
-    <thead>
-        <tr><th>Item</th><th>Approx Cost</th></tr>
-    </thead>
-    <tbody>
-        <tr><td>Heltec Wireless Tracker (pre-built)</td><td>$35–40</td></tr>
-        <tr><td>OR TTGO T-Beam S3 + GPS module</td><td>$25–35</td></tr>
-        <tr><td>LiPo battery 1000–2000mAh</td><td>$5–8</td></tr>
-        <tr><td>Good LoRa antenna</td><td>$3–5</td></tr>
-        <tr><td>Collar mount / 3D printed case</td><td>$0–10 (if you have a printer)</td></tr>
-    </tbody>
-</table>
-
-<h2>Getting Started</h2>
-<ol>
-    <li>Flash Meshtastic firmware on the ESP32 (<a href="https://flash.meshtastic.org" target="_blank">flash.meshtastic.org</a>)</li>
-    <li>Set up your property station first — get it communicating with your phone</li>
-    <li>Flash and configure the collar unit</li>
-    <li>Test range by walking around your yard with the dog's device</li>
-</ol>
-
-<div class="tip">
-    <strong>Tip:</strong> The Meshtastic Discord server (<a href="https://discord.gg/meshtastic" target="_blank">discord.gg/meshtastic</a>) has a <code>#hardware</code> channel that's very active for build questions, and there are several YouTube tutorials showing the actual assembly process.
+<div class="hero">
+    <h1>🐕 Meshtastic Dog Tracker Guide</h1>
+    <p>No leash? No problem! Build your own off-grid GPS tracker so your pup can roam free — and you'll always know where they are. Because every good boy deserves to be found.</p>
 </div>
 
-<p style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.9rem;">Generated July 2026 • Meshtastic Dog Tracker Guide</p>
+<div class="container">
+
+    <div class="card">
+        <h2>🦴 Hardware Options</h2>
+
+        <h3>Option A: Buy Pre-built (Easiest — for the busy pup parent)</h3>
+        <ul>
+            <li><strong>Heltec Wireless Tracker</strong> (~$35–40) <span class="badge">Beginner Friendly</span> — Tiny, purpose-built for GPS tracking, runs Meshtastic out of the box. Small enough for most dogs.</li>
+            <li><strong>LILYGO T-Beam S3 Supreme</strong> (~$25–35) <span class="badge green">Best Battery</span> — ESP32-S3 + GPS + LoRa, slightly bigger but great battery life and well-supported.</li>
+            <li><strong>RAK WisBlock with GPS module</strong> <span class="badge blue">Modular</span> — Modular, good if you want to swap parts later like Lego for grown-ups.</li>
+        </ul>
+
+        <h3>Option B: DIY Build (Cheapest — ~$20–30 in parts)</h3>
+        <ul>
+            <li><strong>ESP32 board:</strong> Heltec V3 or TTGO T-Beam (ESP32 + LoRa SX1262/SX1278)</li>
+            <li><strong>GPS module:</strong> NEO-M9N or ATGM336H (I2C interface, fast fix — faster than your dog at fetching!)</li>
+            <li><strong>Battery:</strong> 1000–2000mAh LiPo with charging board</li>
+            <li><strong>Antenna:</strong> 433/868/915 MHz LoRa antenna (match your region)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📡 System Architecture</h2>
+        <p>Think of it like a game of cosmic fetch — the dog sends signals, your station catches them, and you get the coordinates. Here's how it all connects:</p>
+
+        <div class="diagram">Dog collar: ESP32 + GPS + LoRa → broadcasts position packets 🐕📡
+Property station(s): ESP32 + GPS + LoRa → receives dog's coords, forwards to phone via Bluetooth/WiFi 🏠📶
+Your phone: Meshtastic app → shows dog on map in real-time 📍✨</div>
+
+        <p>You need <strong>at least one fixed station</strong> on your property (garage, house, fence post) that stays within range of both the dog and your phone. The dog's collar broadcasts GPS coordinates over LoRa, the station picks them up and relays to you via Bluetooth to your phone running the Meshtastic app.</p>
+    </div>
+
+    <div class="card">
+        <h2>⚙️ Key Configuration Tips</h2>
+        <ul>
+            <li><strong>Position update interval:</strong> Set to 30–60 seconds on the collar (shorter = more battery drain — don't make it chase its own tail with updates!)</li>
+            <li><strong>Smart broadcast:</strong> Enable — only sends position when dog moves &gt;50m or time since last send &gt; interval. Saves battery like a good boy saves treats.</li>
+            <li><strong>GPS mode:</strong> "Enabled" with reasonable fix timeout</li>
+            <li><strong>Power saving:</strong> The collar should use deep sleep between GPS fixes. A 1000mAh battery can last days to weeks depending on update frequency</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📶 Antenna &amp; Range Considerations</h2>
+        <ul>
+            <li>LoRa range in suburban areas: typically 0.5–2 km line of sight (enough for most backyards and then some!)</li>
+            <li>Use a good quality antenna — not the cheap ceramic ones, unless you want your dog to play hide-and-seek forever</li>
+            <li>Place your property station as high up as possible — roof or tall pole makes a big difference. Higher = better!</li>
+            <li>If your yard is large, add a second relay station at the far end. Two's company, three's a crowd (of signals)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🔋 Power Management</h2>
+        <p>This is the biggest challenge. GPS + LoRa transmission drains battery fast — faster than your dog drains a bag of treats. Tips:</p>
+        <ul>
+            <li>Update position every 60–120 seconds (not every few seconds)</li>
+            <li>Use deep sleep between fixes</li>
+            <li>A 1000mAh battery might last 1–3 days; 2000mAh could stretch to a week</li>
+            <li>Consider a small solar panel on the collar for indefinite operation — because nothing says "I love you" like renewable energy for your pup</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🛒 What You'll Need to Order</h2>
+        <table>
+            <thead>
+                <tr><th>Item</th><th>Approx Cost</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Heltec Wireless Tracker (pre-built)</td><td>$35–40</td></tr>
+                <tr><td>OR TTGO T-Beam S3 + GPS module</td><td>$25–35</td></tr>
+                <tr><td>LiPo battery 1000–2000mAh</td><td>$5–8</td></tr>
+                <tr><td>Good LoRa antenna</td><td>$3–5</td></tr>
+                <tr><td>Collar mount / 3D printed case</td><td>$0–10 (if you have a printer)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>🚀 Getting Started</h2>
+        <ol>
+            <li>Flash Meshtastic firmware on the ESP32 (<a href="https://flash.meshtastic.org" target="_blank">flash.meshtastic.org</a>) — it's easier than teaching your dog to shake (probably)</li>
+            <li>Set up your property station first — get it communicating with your phone</li>
+            <li>Flash and configure the collar unit</li>
+            <li>Test range by walking around your yard with the dog's device. If they follow, you're golden!</li>
+        </ol>
+
+        <div class="tip">
+            💡 <strong>Pro tip:</strong> The Meshtastic Discord server (<a href="https://discord.gg/meshtastic" target="_blank">discord.gg/meshtastic</a>) has a <code>#hardware</code> channel that's very active for build questions, and there are several YouTube tutorials showing the actual assembly process. Don't be afraid to ask — everyone was a beginner once (even the dogs).
+        </div>
+    </div>
+
+    <div class="paw-divider">🐾 🐾 🐾</div>
+
+    <div class="card">
+        <h2>📚 Further Reading &amp; References</h2>
+        <ul>
+            <li><strong>Meshtastic Official Docs:</strong> <a href="https://meshtastic.org/docs/" target="_blank">meshtastic.org/docs</a> — The complete reference for configuration, hardware support, and advanced features.</li>
+            <li><strong>Supported Hardware Overview:</strong> <a href="https://meshtastic.org/docs/hardware/devices/" target="_blank">meshtastic.org/docs/hardware/devices</a> — Full list of compatible boards with specs and comparisons.</li>
+            <li><strong>Position Configuration:</strong> <a href="https://meshtastic.org/docs/configuration/radio/position/" target="_blank">meshtastic.org/docs/configuration/radio/position</a> — Deep dive into GPS settings, smart broadcast, and update intervals.</li>
+            <li><strong>Adafruit GPS Dog Collar Guide:</strong> <a href="https://learn.adafruit.com/gps-dog-collar/overview" target="_blank">learn.adafruit.com/gps-dog-collar</a> — Step-by-step build guide with wiring diagrams and 3D printable case files.</li>
+            <li><strong>Off-Grid GPS Dog Tracker Using Meshtastic:</strong> <a href="https://www.thepaceoflife.com/p/off-grid-gps-dog-tracker-using-meshtastic" target="_blank">thepaceoflife.com</a> — Real-world build log with three radios, no subscriptions or SIM card required.</li>
+            <li><strong>OpenDogTracker (GitHub):</strong> <a href="https://github.com/LeylinFeyler/OpenDogTracker" target="_blank">github.com/LeylinFeyler/OpenDogTracker</a> — Open-source modular tracker built on ESP32-C3 + LoRa, no cellular needed.</li>
+            <li><strong>LoRaPaws32 (GitHub):</strong> <a href="https://github.com/gdellis/LoRaPaws32" target="_blank">github.com/gdellis/LoRaPaws32</a> — ESP32-based pet tracker with LoRa, GPS, and BLE. C++ firmware + Python base station.</li>
+            <li><strong>Animal Tracking Network (LoRa + GPS):</strong> <a href="https://blog.siqma.com/animal-tracking-network-lora-gps-offline-location/" target="_blank">blog.siqma.com</a> — Build a reliable animal tracking network using ESP32. Ideal for farms, pets, and wildlife.</li>
+            <li><strong>Loko: LoRa/GPS Tracker (Hackaday 2025):</strong> <a href="https://hackaday.com/2025/05/22/2025-pet-hacks-contest-loko-tracks-fido-with-lora-and-gps/" target="_blank">hackaday.com/2025/05/22</a> — Hackaday Pet Hacks Contest winner that started as a hack and became a product.</li>
+            <li><strong>DIY Dog GPS Logger (Adafruit Blog):</strong> <a href="https://blog.adafruit.com/2025/07/23/diy-dog-gps-logger-wearablewednesday/" target="_blank">blog.adafruit.com</a> — Tracking rural dogs and working dogs with GPS logging.</li>
+            <li><strong>Tinkerzy Arduino Nano Build:</strong> <a href="https://tinkerzy.com/projects/how-to-make-dog-gps-activity-tracker-with-arduino-nano-gps-tracker/" target="_blank">tinkerzy.com</a> — Arduino Nano + NEO-6M GPS tracker with GSM module for SMS alerts.</li>
+            <li><strong>Circuit Digest IoT Pet Tracker:</strong> <a href="https://circuitdigest.com/microcontroller-projects/iot-pet-tracking-system-using-circuitdigest-cloud" target="_blank">circuitdigest.com</a> — Full DIY build with geofencing, SMS/call alerts &amp; e-paper display.</li>
+            <li><strong>TinyDuino LoRa Pet Tracker (Instructables):</strong> <a href="https://www.instructables.com/Tinyduino-LoRa-Based-Pet-Tracker/" target="_blank">instructables.com</a> — Step-by-step TinyDuino-based tracker with detailed build instructions.</li>
+            <li><strong>Meshtastic Configuration Guide:</strong> <a href="https://www.bitsnbytes.dev/posts/2025-08/meshtastic-configuration-settings.html" target="_blank">bitsnbytes.dev</a> — Useful config options including location tracking best practices.</li>
+            <li><strong>Best Meshtastic Devices 2026:</strong> <a href="https://www.sdrstore.eu/best-meshtastic-devices-2026-handhelds-trackers-base-stations/" target="_blank">sdrstore.eu</a> — Comprehensive comparison of handhelds, trackers, and base stations.</li>
+        </ul>
+    </div>
+
+</div>
+
+<footer>
+    🐾 Made with love for dogs who wander — July 2026 🐾<br>
+    <small>No dogs were harmed in the making of this guide. Only treats were consumed.</small>
+</footer>
 
 </body>
 </html>
-
